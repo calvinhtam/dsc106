@@ -1,0 +1,130 @@
+<!-- 
+    USED THESE AS REFERENCES
+    https://www.d3-graph-gallery.com/graph/pie_changeData.html
+    https://www.d3-graph-gallery.com/graph/custom_legend.html
+-->
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<!-- Color scale -->
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+
+<h1> Look at how the sex demographics of enrolled students </br> change over the years at UCSD! </h1>
+<h3> Click on the buttons and you'll see the demographic that particular year : - ). </h3>
+
+<!-- Add 2 buttons -->
+<button onclick="update(cds_data[bound], '2005')">2005</button>
+<button onclick="update(cds_data[bound - 1], '2006')">2006</button>
+<button onclick="update(cds_data[bound - 2], '2007')">2007</button>
+<button onclick="update(cds_data[bound - 3], '2008')">2008</button>
+<button onclick="update(cds_data[bound - 4], '2009')">2009</button>
+<button onclick="update(cds_data[bound - 5], '2010')">2010</button>
+<button onclick="update(cds_data[bound - 6], '2011')">2011</button>
+<button onclick="update(cds_data[bound - 7], '2012')">2012</button>
+<button onclick="update(cds_data[bound - 8], '2013')">2013</button>
+<button onclick="update(cds_data[bound - 9], '2014')">2014</button>
+<button onclick="update(cds_data[bound - 10], '2015')">2015</button>
+<button onclick="update(cds_data[bound - 11], '2016')">2016</button>
+<button onclick="update(cds_data[bound - 12], '2017')">2017</button>
+<button onclick="update(cds_data[bound - 13], '2018')">2018</button>
+
+<!-- Create a div where the graph will take place -->
+<div id="my_dataviz"></div>
+
+<script>
+
+// set the dimensions and margins of the graph
+var width = 850
+    height = 450
+    margin = 40
+
+// The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
+var radius = Math.min(width, height) / 2 - margin
+
+// append the svg object to the div called 'my_dataviz'
+var svg = d3.select("#my_dataviz")
+    .append("svg")
+        .attr("width", width)
+        .attr("height", height)
+    .append("g")
+        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+var cds_data;
+var bound;
+var cols = ["fulltime_men_enrolled", "fulltime_women_enrolled"];
+
+d3.csv("ucsd_cds_admission_data_2005_to_2018.csv", function(loadedData) {
+    // Only using enrolled data
+    loadedData.forEach(function(d) {
+        for (var key in d) {
+            if (cols.indexOf(key) < 0) {
+                delete d[key];
+            }
+        }
+    });
+
+    cds_data = loadedData;
+    bound = cds_data.length - 1;
+
+    // Initialize the plot with the first dataset
+    update(cds_data[bound], "2005");
+});
+
+// set the color scale
+var color = d3.scaleOrdinal()
+    .domain(cols)
+    .range(d3.schemeSet2);
+
+// A function that create / update the plot for a given variable:
+function update(data, year_x) {
+
+    svg.selectAll("#pie_title").remove();
+
+    console.log(data);
+
+    // Compute the position of each group on the pie:
+    var pie = d3.pie()
+        .value(function(d) {return parseInt(d.value.replace(/,/g, ''), 10); })
+        .sort(function(a, b) { console.log(a) ; return d3.ascending(a.key, b.key);} ) // This make sure that group order remains the same in the pie chart
+    var data_ready = pie(d3.entries(data))
+
+    console.log(data_ready);
+
+    // map to data
+    var u = svg.selectAll("path")
+        .data(data_ready)
+
+    // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
+    u
+        .enter()
+        .append('path')
+        .merge(u)
+        .transition()
+        .duration(500)
+        .attr('d', d3.arc()
+            .innerRadius(0)
+            .outerRadius(radius)
+        )
+        .attr('fill', function(d){ return(color(d.data.key)) })
+        .attr("stroke", "white")
+        .style("stroke-width", "2px")
+        .style("opacity", 1);
+
+    svg.append("text")
+        .attr("id", "pie_title")
+        .attr("transform",
+                "translate(0, " + -4.2 * height/10 + ")")
+        .style("text-anchor", "middle")
+        .text(year_x);
+}
+
+// Legend
+svg.append("circle").attr("cx",200).attr("cy",130).attr("r", 6).style("fill", color("fulltime_men_enrolled"))
+svg.append("circle").attr("cx",200).attr("cy",160).attr("r", 6).style("fill", color("fulltime_women_enrolled"))
+svg.append("text").attr("x", 220).attr("y", 130).text("# of Fulltime Men Enrolled").style("font-size", "15px").attr("alignment-baseline","middle")
+svg.append("text").attr("x", 220).attr("y", 160).text("# of Fulltime Women Enrolled").style("font-size", "15px").attr("alignment-baseline","middle")	
+
+</script>

@@ -1,0 +1,140 @@
+<!-- 
+    USED THESE AS REFERENCES
+    https://www.d3-graph-gallery.com/graph/barplot_button_data_csv.html
+    https://bl.ocks.org/d3noob/23e42c8f67210ac6c678db2cd07a747e
+-->
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<!-- Color scale -->
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+
+<h1> Look at how the demographics change over the years! </h1>
+<h3> Click on the buttons and you'll see how those
+     particular demographics change over time : - ). </h3>
+
+<!-- Add 2 buttons -->
+<button onclick="update(cds_data, 'fulltime_men_applied')">Men Applied</button>
+<button onclick="update(cds_data, 'fulltime_women_applied')">Women Applied</button>
+<button onclick="update(cds_data, 'fulltime_men_admitted')">Men Admitted</button>
+<button onclick="update(cds_data, 'fulltime_women_admitted')">Women Admitted</button>
+<button onclick="update(cds_data, 'fulltime_men_enrolled')">Men Enrolled</button>
+<button onclick="update(cds_data, 'fulltime_women_enrolled')">Women Enrolled</button>
+
+<!-- Create a div where the graph will take place -->
+<div id="my_dataviz"></div>
+
+<script>
+
+// set the dimensions and margins of the graph
+var margin = {top: 30, right: 30, bottom: 70, left: 60},
+    width = 460 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+// append the svg object to the body of the page
+var svg = d3.select("#my_dataviz")
+  	.append("svg")
+    	.attr("width", width + margin.left + margin.right)
+ 	    .attr("height", height + margin.top + margin.bottom)
+ 	.append("g")
+    	.attr("transform", 
+			  "translate(" + margin.left + "," + margin.top + ")");
+
+// Initialize the X axis
+var x = d3.scaleBand()
+  .range([ 0, width ])
+  .padding(0.2);
+var xAxis = svg.append("g")
+  .attr("transform", "translate(0," + height + ")");
+
+// Initialize the Y axis
+var y = d3.scaleLinear()
+  .range([ height, 0]);
+var yAxis = svg.append("g")
+  .attr("class", "myYaxis");
+
+
+// Bar Chart Titles
+var bar_map = new Map([["fulltime_men_applied" ,"Fulltime Men who Applied to UCSD"],  
+                ["fulltime_women_applied", "Fulltime Women who Applied to UCSD"],
+                ["fulltime_women_admitted", "Fulltime Women who are Admitted to UCSD"],
+                ["fulltime_men_enrolled", "Fulltime Men who are Enrolled at UCSD"],
+                ["fulltime_women_enrolled", "Fulltime Women who are Enrolled at UCSD"],
+                ["fulltime_men_admitted", "Fulltime Men who are Admitted to UCSD"]]);
+
+var cds_data;
+var color;
+
+d3.csv("ucsd_cds_admission_data_2005_to_2018.csv", function(loadedData) {
+    cds_data = loadedData;
+    // Initialize the plot with the first dataset
+    cds_data.columns.shift(1);
+    color = d3.scaleOrdinal()
+        .domain(cds_data.columns)
+        .range(d3.schemeSet2);
+    
+    update(cds_data, "fulltime_men_applied");
+});
+
+
+// A function that create / update the plot for a given variable:
+function update(data, y_button) {
+
+    svg.selectAll("#bar_title").remove();
+
+    console.log(data);
+
+	// X axis
+    x.domain(data.map(function(d) { return d.year; }).reverse())
+    xAxis.transition().duration(1000).call(d3.axisBottom(x))
+
+	// Add Y axis
+    y.domain([0, d3.max(data, function(d) { return parseInt(d[y_button].replace(/,/g, ''), 10); }) ]);
+    yAxis.transition().duration(1000).call(d3.axisLeft(y));
+
+
+	// variable u: map data to existing bars
+    var u = svg.selectAll("rect")
+    	.data(data)
+
+    // update bars
+    u
+      	.enter()
+     	.append("rect")
+      	.merge(u)
+      	.transition()
+      	.duration(1000)
+        	.attr("x", function(d) { return x(d.year); })
+        	.attr("y", function(d) { return y(parseInt(d[y_button].replace(/,/g, ''), 10)); })
+        	.attr("width", x.bandwidth())
+        	.attr("height", function(d) { return height - y(parseInt(d[y_button].replace(/,/g, ''), 10)); })
+        	.attr("fill", color(y_button))
+
+    svg.append("text")
+        .attr("id", "bar_title")
+        .attr("transform",
+              "translate(" + (width/2) + " ,0)")
+        .style("text-anchor", "middle")
+        .text(bar_map.get(y_button));
+
+}
+
+svg.append("text")   
+    .attr("transform", "rotate(-90)")
+    .attr("y", 0 - margin.left)
+    .attr("x",0 - (height / 2))
+    .attr("dy", "1em")
+    .style("text-anchor", "middle")
+    .text("Number of students");
+
+svg.append("text")                 
+    .attr("transform",
+          "translate(" + (width/2) + " ," + 
+          (height + margin.top + 20) + ")")
+    .style("text-anchor", "middle")
+    .text("Year");
+
+</script>
