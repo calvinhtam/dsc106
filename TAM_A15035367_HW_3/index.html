@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Internal stylesheet import -->
+    <link rel="stylesheet" href="main.css">
+    <!-- External Script -->
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/data.js"></script>
+  </head>
+  <body>
+    <!-- Page Header Table -->
+    <table class="simpleTable">
+      <tr>
+        <td width="5%"><img src="assets/nth9p.jpg" alt="Homer logo" class="pageLogo"/></td>
+        <td width="15%"><h1>Energy &nbsp;&nbsp;&nbsp;&nbsp;Springfield</h1></td>
+        <td><h1></h1></td>
+      </tr>
+    </table>
+
+    <!-- Chart Placement Table -->
+    <table class="simpleTable greaterArea" id="potato">
+      <tr>
+        <td rowspan="2">
+          <div id="sharedGrid"></div>
+        </td>
+        <td style="border-bottom: 1px transparent">
+          <table id="legendGrid">
+            <tr id="zeroRow">
+              <td></td>
+              <td></td>
+              <td colspan='2' class="endDate" id="endDate"></td>
+            </tr>
+            <tr id="initRow">
+              <td><img src="assets/default.png" class="firstcol"/></td>
+              <td class="secondHeader">Power<div class="greyTime">MW</div></td>
+              <td class="thirdHeader"><div>Contribution</div><div class="greyTime">to demand</div></td>
+              <td class="lastHeader"><div>Av.Value</div><div class="greyTime">$/MWh</div></td>
+            </tr>
+            <tr id="secondRow">
+              <td class="firstHeader">Sources</td>
+              <td id="sourcesSecond" class="secondHeader"></td>
+              <td class="thirdcol"></td>
+              <td id="sourcesLast" class="lastHeader"></td>
+            </tr>
+            <tr id="thirdRow">
+              <td class="firstcol"><div class="box green">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Wind</div></td>
+              <td id="windSecond" class="secondcol"></td>
+              <td id="windThird" class="thirdcol"></td>
+              <td id="windLast" class="lastcol"></td>
+            </tr>
+            <tr id="fourthRow">
+              <td class="firstcol"><div class="box hydro">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hydro</div></td>
+              <td id="hydroSecond" class="secondcol"></td>
+              <td id="hydroThird" class="thirdcol"></td>
+              <td id="hydroLast" class="lastcol"></td>
+            </tr>
+            <tr id="fifthRow">
+              <td class="firstcol"><div class="box tan">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Gas(CCGT)</div></td>
+              <td id="gas_ccgtSecond" class="secondcol"></td>
+              <td id="gas_ccgtThird" class="thirdcol"></td>
+              <td id="gas_ccgtLast" class="lastcol"></td>
+            </tr>
+            <tr id="sixthRow">
+              <td class="firstcol"><div class="box red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Distillate</div></td>
+              <td id="distillateSecond" class="secondcol"></td>
+              <td id="distillateThird" class="thirdcol"></td>
+              <td id="distillateLast" class="lastcol"></td>
+            </tr>
+            <tr id="seventhRow">
+              <td class="firstcol"><div class="box black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BlackCoal</div></td>
+              <td id="black_coalSecond" class="secondcol"></td>
+              <td id="black_coalThird" class="thirdcol"></td>
+              <td id="black_coalLast" class="lastcol"></td>
+            </tr>
+            <tr id="eighthRow">
+              <td class="firstHeader">Loads</td>
+              <td id="loadsSecond" class="secondHeader"></td>
+              <td class="thirdcol"></td>
+              <td class="lastcol"></td>
+            </tr>
+            <tr id="ninthRow">
+              <td class="firstcol"><div class="box purple">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Exports</div></td>
+              <td id="exportsSecond" class="secondcol"></td>
+              <td id="exportsThird" class="thirdcol"></td>
+              <td id="exportsLast" class="lastcol"></td>
+            </tr>
+            <tr id="tenthRow">
+              <td class="firstcol"><div class="box pump">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pumps</div></td>
+              <td id="pumpsSecond" class="secondcol"></td>
+              <td id="pumpsThird" class="thirdcol"></td>
+              <td id="pumpsLast" class="lastcol"></td>
+            </tr>
+            <tr id="eleventhRow">
+              <td class="firstHeader" style="border-bottom: 1px solid black">Net</td>
+              <td id="netSecond" class="secondHeader" style="border-bottom: 1px solid black"></td>
+              <td class="thirdcol" style="border-bottom: 1px solid black"></td>
+              <td class="lastcol" style="border-bottom: 1px solid black"></td>
+            </tr>
+            <tr id="twelfthRow">
+              <td class="firstHeader" style="border-bottom: 1px solid black">Renewables</td>
+              <td class="secondcol" style="border-bottom: 1px solid black"></td>
+              <td id="renewablesThird" class="thirdHeader" style="border-bottom: 1px solid black"></td>
+              <td class="lastcol" style="border-bottom: 1px solid black"></td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td id="pieGrid" style="border-bottom: 1px transparent">
+        </td>
+      </tr>
+    </table>
+
+    <!-- Internal JS Import -->
+    <script src="main.js"></script>
+  </body>
+</html>
